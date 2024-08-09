@@ -3,17 +3,17 @@ services:
   jorani:
     build: .
     ports:
-      - "8080:80"
+      - "8080:80" # Changed host port from 80 to 8080 to avoid conflict
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_DATABASE=jorani
       - MYSQL_USER=jorani
       - MYSQL_PASSWORD=jorani
-      - MYSQL_TCP_PORT=3307
+
   mysql:
-    image: mysql:8
+    image: mysql:5.7 # Downgraded MySQL version to 5.7
     ports:
-      - "3307:3307"
+      - "3307:3306" # Changed host port from 3306 to 3307 to avoid conflict
     environment:
       - MYSQL_ROOT_PASSWORD=jorani
       - MYSQL_DATABASE=jorani
