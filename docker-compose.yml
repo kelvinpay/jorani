@@ -3,21 +3,25 @@ services:
   jorani:
     build: .
     ports:
-      - "8080:80" # Changed host port from 80 to 8080 to avoid conflict
+      - "8080:80" # Host port 8080 to container port 80
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_DATABASE=jorani
       - MYSQL_USER=jorani
       - MYSQL_PASSWORD=jorani
+    depends_on:
+      - mysql # Ensure MySQL starts before Jorani
 
   mysql:
-    image: mysql:5.7 # Downgraded MySQL version to 5.7
+    image: mysql:5.7
     ports:
-      - "3307:3306" # Changed host port from 3306 to 3307 to avoid conflict
+      - "3307:3306" # Host port 3307 to container port 3306
     environment:
       - MYSQL_ROOT_PASSWORD=jorani
       - MYSQL_DATABASE=jorani
       - MYSQL_USER=jorani
       - MYSQL_PASSWORD=jorani
     volumes:
-      - ./sql/jorani.sql:/docker-entrypoint-initdb.d/jorani.sql
+      - ./sql/jorani.sql:/docker-entrypoint-initdb.d/jorani.sql:ro # Set the volume to read-only to avoid write locks
+    tmpfs:
+      - /docker-entrypoint-initdb.d # Use tmpfs to avoid potential disk issues
